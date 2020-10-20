@@ -17,18 +17,17 @@
 <h1>글쓰기 페이지</h1>
 <hr/>
 
-<form action="/save" method="post">
+
 	<label for="title"><h3>제목</h3></label>
 	
 	<input type="text" name="title" id="title" style="width: 90%;"/>
 	
 	<div id="editor" style="height: 500px;">
 
-</div>
-	<input type="hidden" name="content" id="content" value="">
+	</div>
 	<br/>
-	<button onclick="write" type="button" class="btn btn-success float-right" >글쓰기완료</button>
-</form>
+	<button type="button" onclick="save()">글쓰기완료</button>
+
 </main>
 <script>
 
@@ -38,21 +37,18 @@ var quill = new Quill('#editor', {
     placeholder:'내용입력',
     
   });
-  
 
-let value =  document.querySelector('#editor').innerText; 
-let title =  document.querySelector('#title').value;
-let content_el =  document.querySelector('#content');
-content_el.value = value;
-let content = content_el.value;
-console.log(value);
-let board = {
-		title: title,
-		content: content
-			};
-
-let write = () => {
-	fetch("/board/",{
+function save(){
+	let value =  document.querySelector('#editor .ql-editor').innerHTML; 
+	let title =  document.querySelector('#title').value;
+	let content = document.querySelector('#editor .ql-editor').innerHTML;
+	console.log(value);
+	let board = {
+			title: title,
+			content: content
+				};
+		
+	fetch("/save",{
 			method:"post",
 			headers:{
 				'Content-Type':'application/json; charset=utf-8',
@@ -61,11 +57,15 @@ let write = () => {
 		}).then(res=> res.text()).then(res=>{
 			if(res === "ok"){
 				alert("등록완료");
-				location.href = "/board/list";
+				location.href = "/list";
 				}else{
 				alert("등록실패");
 					}
 			});
 }
+  
+
+
+
     </script>
 <%@ include file="layout/footer.jsp" %>

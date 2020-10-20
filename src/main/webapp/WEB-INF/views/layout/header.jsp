@@ -51,6 +51,13 @@ a {
 a:hover {
 	color: orange;
 }
+.pageDiv{
+	display: flex;
+	justify-content: center;
+}
+.page-item{
+	margin: 10px 30px;
+}
 
 </style>
 </head>

@@ -5,6 +5,10 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,18 +39,30 @@ public class BoardController {
 		return "saveForm";
 	}
 	
+	@ResponseBody
 	@PostMapping("/save")
-	public String save(BoardSaveRequestDto dto) {
+	public String save(@RequestBody BoardSaveRequestDto dto) {
 		boardService.글쓰기(dto);
-		return "redirect:list";
+		return "ok";
 	}
 	
 	@GetMapping({"","/","/list"})
-	public String list(Model model) {
+	public String list(Model model, @PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable) {
 		
-		model.addAttribute("boards",boardService.글목록());
+		model.addAttribute("boards",boardService.글목록(pageable));
+		model.addAttribute("contents",boardService.글내용바꾸기());
+		
 		return "list";
 	}
+	
+	@GetMapping({"/list/test"})
+	@ResponseBody
+	public Page<Board> listTest(@PageableDefault(size = 5, sort = "id", direction = Direction.DESC) Pageable pageable) {
+		
+		
+		return boardService.글목록(pageable);
+	}
+	
 	
 	@GetMapping("/board/{id}")
 	public String detail(@PathVariable int id,Model model) throws Exception {
